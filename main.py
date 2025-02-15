@@ -31,10 +31,8 @@ def remove_old_config(file_path, start_marker, end_marker):
 
 
 def check_git_updates():
-    # Переход в директорию репозитория
     subprocess.run(['git', '-C', '.', 'fetch'], check=True)
     
-    # Получение информации о различиях
     result = subprocess.run(
         ['git', '-C', '.', 'log', f'HEAD..origin/main', '--oneline'],
         capture_output=True,
@@ -75,7 +73,7 @@ if platform.system() == "Linux":
         shutil.copytree(source_folder, os.path.join(destination_folder, os.path.basename(source_folder)), dirs_exist_ok=True)
         source_folder = "clang-format"
         shutil.copytree(source_folder, os.path.join(destination_folder, os.path.basename(source_folder)), dirs_exist_ok=True)
-        subprocess.run("sudo apt update && sudo apt upgrade -y && sudo apt install -y clazy && sudo apt install -y clang-format && sudo apt install -y cmake && sudo apt-get install -f", shell=True)
+        subprocess.run("sudo apt update && sudo apt upgrade -y && sudo apt install -y curl && sudo apt install -y clazy && sudo apt install -y clang-format && sudo apt install -y cmake && sudo apt-get install -f", shell=True)
         print("\nДля проверки установки проделайте шаги указанные в файле check.txt, если все успешно, нажмите Y, иначе N")
         while True:
             user_input = input().strip().upper()
