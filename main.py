@@ -7,24 +7,60 @@ url = "http://158.160.166.58:30002/messages"
 headers = "Content-Type: application/json"
 
 
-def check_git_updates():
+def remove_old_config(file_path, start_marker, end_marker):
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
 
+    inside_range = False
+    result_lines = []
+
+    for line in lines:
+        if start_marker in line:
+            inside_range = True  
+            continue             
+
+        if end_marker in line:
+            inside_range = False  
+            continue              
+
+        if not inside_range:
+            result_lines.append(line)
+    with open(file_path, 'w') as file:
+        file.writelines(result_lines)
+
+
+
+def check_git_updates():
+    # Переход в директорию репозитория
+    subprocess.run(['git', '-C', '.', 'fetch'], check=True)
+    
+    # Получение информации о различиях
     result = subprocess.run(
-            ["git", "log", "--remotes=origin", "--not", "--branches"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            check=True
-        )
-    return result.stdout
+        ['git', '-C', '.', 'log', f'HEAD..origin/main', '--oneline'],
+        capture_output=True,
+        text=True,
+        check=True
+    )
+    
+    return result.stdout.strip()
+
 
 if platform.system() == "Linux":
     dir = os.getenv('HOME') + "/.config/QtProject"
     if os.path.exists(dir+"/QtCreatorBackup.ini"):
         print("Поиск обновлений")
-        print(check_git_updates())
-
-        
+        if check_git_updates():
+            print("Найдено обновление")
+            subprocess.run(['git', '-C', '.', 'reset', '--hard'])
+            subprocess.run(['git', '-C', '.', 'pull'])
+            with open("forConfigUbuntu.ini", "r", encoding="utf-8") as src:
+                code_to_add = src.read()
+            remove_old_config(dir+"/QtCreator.ini", "[Beautifier]", "ForceEnabled=Beautifier")
+            with open(dir+"/QtCreator.ini", "a", encoding="utf-8") as dest:
+                dest.write("\n"+code_to_add)
+            print("Обновление установлено")
+        else:
+            print("Обновление не найдено")
     else:    
         print("Введите фамилию: ")
         surname = input()
