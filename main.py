@@ -7,26 +7,22 @@ url = "http://158.160.166.58:30002/messages"
 headers = "Content-Type: application/json"
 
 
-def check_git_updates(repo_path, branch='main'):
-    # Переход в директорию репозитория
-    subprocess.run(['git', '-C', repo_path, 'fetch'], check=True)
-    
-    # Получение информации о различиях
-    result = subprocess.run(
-        ['git', '-C', repo_path, 'log', f'HEAD..origin/{branch}', '--oneline'],
-        capture_output=True,
-        text=True,
-        check=True
-    )
-    
-    return result.stdout.strip()
+def check_git_updates():
 
+    result = subprocess.run(
+            ["git", "log", "--remotes=origin", "--not", "--branches"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True
+        )
+    return result.stdout
 
 if platform.system() == "Linux":
     dir = os.getenv('HOME') + "/.config/QtProject"
     if os.path.exists(dir+"/QtCreatorBackup.ini"):
         print("Поиск обновлений")
-        print(check_git_updates(os.curdir))
+        print(check_git_updates())
 
         
     else:    
