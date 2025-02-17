@@ -98,6 +98,7 @@ if platform.system() == "Linux":
             else:
                 print("Неверный ввод! Пожалуйста, нажмите Y или N.")
 elif platform.system() == "Darwin":
+    subprocess.run("brew install llvm && brew install clazy && brew install cmake")
     dir = os.getenv('HOME') + "/.config/QtProject"
     with open("forConfigMac.ini", "r", encoding="utf-8") as src:
         code_to_add = src.read()
