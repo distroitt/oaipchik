@@ -17,11 +17,15 @@ def copy_config(dir):
     shutil.copytree(source_folder, os.path.join(destination_folder, os.path.basename(source_folder)), dirs_exist_ok=True)
 
 
-def install_updates(dir):
+def install_updates(dir, syst):
     subprocess.run(['git', '-C', '.', 'reset', '--hard'])
     subprocess.run(['git', '-C', '.', 'pull'])
-    with open("forConfigUbuntu.ini", "r", encoding="utf-8") as src:
-        code_to_add = src.read()
+    if syst == "Ubuntu":
+        with open("forConfigUbuntu.ini", "r", encoding="utf-8") as src:
+            code_to_add = src.read()
+    elif syst == "MacOS":
+        with open("forConfigMac.ini", "r", encoding="utf-8") as src:
+            code_to_add = src.read()
     remove_old_config(dir+"/QtCreator.ini", "[Beautifier]", "ForceEnabled=Beautifier")
     with open(dir+"/QtCreator.ini", "a", encoding="utf-8") as dest:
         dest.write("\n"+code_to_add)   
@@ -93,7 +97,7 @@ if platform.system() == "Linux":
         print("Поиск обновлений")
         if check_git_updates():
             print("Найдено обновление")
-            install_updates(dir)
+            install_updates(dir, "Ubuntu")
             print("Обновление установлено")
         else:
             print("Обновление не найдено")
@@ -112,7 +116,7 @@ elif platform.system() == "Darwin":
         print("Поиск обновлений")
         if check_git_updates():
             print("Найдено обновление")
-            install_updates(dir)
+            install_updates(dir,"MacOS")
             print("Обновление установлено")
         else:
             print("Обновление не найдено")
