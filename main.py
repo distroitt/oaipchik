@@ -6,7 +6,7 @@ import subprocess
 url = "http://158.160.166.58:30002/messages"
 headers = "Content-Type: application/json"
 
-def copy_config(dir):
+def copy_config(dir, code_to_add):
     with open(dir+"/QtCreator.ini", "a", encoding="utf-8") as dest:
             dest.write("\n"+code_to_add)
     shutil.copy(dir+"/QtCreator.ini", dir+"/QtCreatorBackup.ini")
@@ -106,7 +106,7 @@ if platform.system() == "Linux":
         surname = input()
         with open("forConfigUbuntu.ini", "r", encoding="utf-8") as src:
             code_to_add = src.read()
-        copy_config(dir)
+        copy_config(dir, code_to_add)
         subprocess.run("sudo apt update && sudo apt upgrade -y && sudo apt install -y curl && sudo apt install -y clazy && sudo apt install -y clang-format && sudo apt install -y cmake && sudo apt-get install -f", shell=True)
         check_install(surname)
 
@@ -125,7 +125,7 @@ elif platform.system() == "Darwin":
         surname = input()
         with open("forConfigMac.ini", "r", encoding="utf-8") as src:
             code_to_add = src.read()
-        copy_config(dir)
+        copy_config(dir, code_to_add)
         subprocess.run("brew update && brew upgrade && brew install llvm && brew install clazy && brew install cmake", shell = True)
         check_install(surname)
     
