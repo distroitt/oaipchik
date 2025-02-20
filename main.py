@@ -15,8 +15,7 @@ def copy_config(dir, code_to_add):
     shutil.copytree(source_folder, os.path.join(destination_folder, os.path.basename(source_folder)), dirs_exist_ok=True)
     source_folder = "clang-format"
     shutil.copytree(source_folder, os.path.join(destination_folder, os.path.basename(source_folder)), dirs_exist_ok=True)
-
-
+        
 def install_updates(dir, syst):
     subprocess.run(['git', '-C', '.', 'reset', '--hard'])
     subprocess.run(['git', '-C', '.', 'pull'])
@@ -28,7 +27,13 @@ def install_updates(dir, syst):
             code_to_add = src.read()
     remove_old_config(dir+"/QtCreator.ini", "[Beautifier]", "ForceEnabled=Beautifier")
     with open(dir+"/QtCreator.ini", "a", encoding="utf-8") as dest:
-        dest.write("\n"+code_to_add)   
+        dest.write("\n"+code_to_add)
+    file_path = "beautifier/clangformat/google/.clang-format"
+    with open(file_path, "r") as code_style:
+            code_to_add = code_style.read()
+    destination_folder = dir+"/qtcreator/"
+    with open(destination_folder+file_path, "w") as file:
+            file.write(code_to_add)
 
 def check_install(surname):
     print("\nДля проверки установки проделайте шаги указанные в файле check.txt, если все успешно, нажмите Y, иначе N")    
@@ -75,9 +80,6 @@ def remove_old_config(file_path, start_marker, end_marker):
             result_lines.append(line)
     with open(file_path, 'w') as file:
         file.writelines(result_lines)
-
-
-
 def check_git_updates():
     subprocess.run(['git', '-C', '.', 'fetch'], check=True)
     
@@ -89,8 +91,6 @@ def check_git_updates():
     )
     
     return result.stdout.strip()
-
-
 if platform.system() == "Linux":
     dir = os.getenv('HOME') + "/.config/QtProject"
     if os.path.exists(dir+"/QtCreatorBackup.ini"):
@@ -128,4 +128,3 @@ elif platform.system() == "Darwin":
         copy_config(dir, code_to_add)
         subprocess.run("brew update && brew upgrade && brew install llvm && brew install clazy && brew install cmake", shell = True)
         check_install(surname)
-    
