@@ -1,0 +1,50 @@
+<qtcreator>
+<data>
+<variable>Profile.0</variable>
+<valuemap type="QVariantMap">
+<value type="bool" key="PE.Profile.AutoDetected">false</value>
+<value type="QString" key="PE.Profile.AutoDetectionSource"/>
+<valuemap type="QVariantMap" key="PE.Profile.Data">
+<valuelist type="QVariantList" key="CMake.ConfigurationKitInformation">
+<value type="QString">QT_QMAKE_EXECUTABLE:FILEPATH=%{Qt:qmakeExecutable}</value>
+<value type="QString">CMAKE_PREFIX_PATH:PATH=%{Qt:QT_INSTALL_PREFIX}</value>
+<value type="QString">CMAKE_C_COMPILER:FILEPATH=%{Compiler:Executable:C}</value>
+<value type="QString">CMAKE_CXX_COMPILER:FILEPATH=%{Compiler:Executable:Cxx}</value>
+</valuelist>
+<valuemap type="QVariantMap" key="CMake.GeneratorKitInformation">
+<value type="QString" key="ExtraGenerator"/>
+<value type="QString" key="Generator">Unix Makefiles</value>
+<value type="QString" key="Platform"/>
+<value type="QString" key="Toolset"/>
+</valuemap>
+<value type="QString" key="CMakeProjectManager.CMakeKitInformation">{00bf7290-6874-4e70-815b-2d27387da328}</value>
+<value type="QString" key="Debugger.Information">{bf355929-7f48-45e6-8c3d-1ece21ab36b8}</value>
+<value type="QString" key="PE.Profile.Device">Desktop Device</value>
+<value type="QString" key="PE.Profile.DeviceType">Desktop</value>
+<valuemap type="QVariantMap" key="PE.Profile.ToolChainsV3">
+...
+</valuemap>
+<value type="int" key="QtSupport.QtInformation">1</value>
+</valuemap>
+<value type="QString" key="PE.Profile.DeviceTypeForIcon"/>
+<value type="QString" key="PE.Profile.Icon"/>
+<value type="QString" key="PE.Profile.Id">{03f9d521-fda2-4ebc-90db-60fd239b13a0}</value>
+<valuelist type="QVariantList" key="PE.Profile.MutableInfo"/>
+<value type="QString" key="PE.Profile.Name">Desktop</value>
+<value type="bool" key="PE.Profile.SDK">false</value>
+<valuelist type="QVariantList" key="PE.Profile.StickyInfo"/>
+</valuemap>
+</data>
+<data>
+<variable>Profile.Count</variable>
+<value type="int">1</value>
+</data>
+<data>
+<variable>Profile.Default</variable>
+<value type="QString">{03f9d521-fda2-4ebc-90db-60fd239b13a0}</value>
+</data>
+<data>
+<variable>Version</variable>
+<value type="int">1</value>
+</data>
+</qtcreator>
