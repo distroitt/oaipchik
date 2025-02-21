@@ -41,7 +41,7 @@ def install_updates(dir, syst):
 
 
 def check_install(surname):
-    print("\nДля проверки установки проделайте шаги указанные в файле check.txt, если все успешно, нажмите Y, иначе N")
+    print("\n(!) ОБЯЗАТЕЛЬНО ПЕРЕЗАПУСТИТЕ Qt Creator (!) Для проверки установки проделайте шаги указанные в файле check.txt, если все успешно, нажмите Y, иначе N")
     while (True):
         user_input = input().strip().upper()
         if user_input == 'Y':
