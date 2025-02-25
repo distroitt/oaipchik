@@ -118,7 +118,7 @@ if platform.system() == "Linux":
             code_to_add = src.read()
         copy_config(dir, code_to_add)
         subprocess.run(
-            "sudo apt update && sudo apt upgrade -y && sudo apt install -y curl && sudo apt install -y clazy && sudo apt install -y clang-tidy && sudo apt install -y clang-format && sudo apt install -y cmake && sudo apt-get install -f",
+            "sudo apt update && sudo apt upgrade -y && sudo apt install -y curl && sudo apt install -y clazy && sudo apt install -y clang-format && sudo apt install -y cmake && sudo apt-get install -f && mkdir ~/bin && cp clang-tidy ~/bin/",
             shell=True)
         check_install(surname)
 
@@ -138,6 +138,6 @@ elif platform.system() == "Darwin":
         with open("forConfigMac.ini", "r", encoding="utf-8") as src:
             code_to_add = src.read()
         copy_config(dir, code_to_add)
-        subprocess.run("brew update && brew upgrade && brew install llvm && brew install clazy && brew install cmake",
+        subprocess.run("brew update && brew upgrade && brew install llvm && brew install clazy && brew install cmake && mkdir ~/bin && cp clang-tidy ~/bin/",
                        shell=True)
         check_install(surname)
