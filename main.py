@@ -26,7 +26,7 @@ def install_updates(dir, syst):
     if syst == "Ubuntu":
         with open("forConfigUbuntu.ini", "r", encoding="utf-8") as src:
             code_to_add = src.read()
-        if os.system(f"dpkg -l {package_name} > /dev/null 2>&1") == 0:
+        if os.system(f"dpkg -l dobri-clang-tidy > /dev/null 2>&1") == 0:
             subprocess.run("sudo apt install -y git-lfs; git lfs install; git lfs pull; sudo apt remove -y clang-tidy; sudo dpkg -i dobri-clang-tidy.deb; rm dobri-clang-tidy.deb", shell=True)
     elif syst == "MacOS":
         with open("forConfigMac.ini", "r", encoding="utf-8") as src:
