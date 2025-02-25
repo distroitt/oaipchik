@@ -102,8 +102,9 @@ def check_git_updates():
 
 
 if platform.system() == "Linux":
+    
     dir = os.getenv('HOME') + "/.config/QtProject"
-    if os.path.exists(dir + "/QtCreatorBackup.ini"):
+    if os.path.exists(dir + "/QtCreatorBackufp.ini"):
         print("Поиск обновлений")
         if check_git_updates():
             print("Найдено обновление")
@@ -115,10 +116,12 @@ if platform.system() == "Linux":
         print("Введите фамилию: ")
         surname = input()
         with open("forConfigUbuntu.ini", "r", encoding="utf-8") as src:
-            code_to_add = src.read()
+            code_to_add = src.readlines()
+        code_to_add[code_to_add.index("ClangTidyExecutable=~bin/clang-tidy\n")] = "ClangTidyExecutable=" + os.environ.get("HOME") + "/bin/clang-tidy\n"
+        code_to_add = "".join(code_to_add)
         copy_config(dir, code_to_add)
         subprocess.run(
-            "sudo apt update && sudo apt upgrade -y && sudo apt install -y curl && sudo apt install -y clazy && sudo apt install -y clang-format && sudo apt install -y cmake && sudo apt-get install -f && mkdir ~/bin && tar -xvzf clang-tidy.tar.gz && cp clang-tidy ~/bin/ && rm clang-tidy && rm clang-tidy.tar.gz",
+            "sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y clang-format; sudo apt install -y cmake; sudo apt-get install -f; tar -xvzf clang-tidy.tar.gz clang-tidy; cp clang-tidy ~/bin; rm clang-tidy; rm clang-tidy.tar.gz",
             shell=True)
         check_install(surname)
 
@@ -138,6 +141,6 @@ elif platform.system() == "Darwin":
         with open("forConfigMac.ini", "r", encoding="utf-8") as src:
             code_to_add = src.read()
         copy_config(dir, code_to_add)
-        subprocess.run("brew update && brew upgrade && brew install llvm && brew install clazy && brew install cmake && mkdir ~/bin && cp clang-tidy ~/bin/",
+        subprocess.run("brew update && brew upgrade && brew install llvm && brew install clazy && brew install cmake",
                        shell=True)
         check_install(surname)
