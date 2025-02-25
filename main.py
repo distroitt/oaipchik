@@ -5,7 +5,7 @@ import subprocess
 
 url = "http://158.160.166.58:30002/messages"
 headers = "Content-Type: application/json"
-#dobra
+#dobraf
 
 def copy_config(dir, code_to_add):
     with open(dir + "/QtCreator.ini", "a", encoding="utf-8") as dest:
