@@ -106,7 +106,7 @@ def check_git_updates():
 if platform.system() == "Linux":
     
     dir = os.getenv('HOME') + "/.config/QtProject"
-    if os.path.exists(dir + "/QtCreatorBackufp.ini"):
+    if os.path.exists(dir + "/QtCreatorBackup.ini"):
         print("Поиск обновлений")
         if check_git_updates():
             print("Найдено обновление")
