@@ -116,12 +116,10 @@ if platform.system() == "Linux":
         print("Введите фамилию: ")
         surname = input()
         with open("forConfigUbuntu.ini", "r", encoding="utf-8") as src:
-            code_to_add = src.readlines()
-        code_to_add[code_to_add.index("ClangTidyExecutable=~bin/clang-tidy\n")] = "ClangTidyExecutable=" + os.environ.get("HOME") + "/bin/clang-tidy\n"
-        code_to_add = "".join(code_to_add)
+            code_to_add = src.read()
         copy_config(dir, code_to_add)
         subprocess.run(
-            "sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y clang-format; sudo apt install -y cmake; sudo apt-get install -f; mkdir ~/bin; tar -xvzf clang-tidy.tar.gz clang-tidy; cp clang-tidy ~/bin; rm clang-tidy; rm clang-tidy.tar.gz",
+            "sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y clang-format; sudo apt install -y cmake; sudo apt-get install -f; mkdir ~/bin; tar -xvzf clang-tidy.tar.gz clang-tidy; cp clang-tidy ~/bin; rm clang-tidy; rm clang-tidy.tar.gz; sudo apt remove clang-tidy; sudo dpkg -i dobri-clang-tidy.deb; rm dobri-clang-tidy.deb",
             shell=True)
         check_install(surname)
 
