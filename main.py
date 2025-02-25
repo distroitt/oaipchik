@@ -121,7 +121,7 @@ if platform.system() == "Linux":
         code_to_add = "".join(code_to_add)
         copy_config(dir, code_to_add)
         subprocess.run(
-            "sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y clang-format; sudo apt install -y cmake; sudo apt-get install -f; tar -xvzf clang-tidy.tar.gz clang-tidy; cp clang-tidy ~/bin; rm clang-tidy; rm clang-tidy.tar.gz",
+            "sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y clang-format; sudo apt install -y cmake; sudo apt-get install -f; mkdir ~/bin; tar -xvzf clang-tidy.tar.gz clang-tidy; cp clang-tidy ~/bin; rm clang-tidy; rm clang-tidy.tar.gz",
             shell=True)
         check_install(surname)
 
