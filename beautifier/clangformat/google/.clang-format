@@ -54,13 +54,12 @@ IndentCaseLabels: true
 IndentPPDirectives: None
 IndentWidth: 2
 KeepEmptyLinesAtTheStartOfBlocks: true
-MaxEmptyLinesToKeep: 1
+MaxEmptyLinesToKeep: 2
 NamespaceIndentation: None
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
 PointerAlignment: Left
-ReflowComments: false
-SeparateDefinitionBlocks: Always   # Only support since clang-format 14
+ReflowComments: false  # Only support since clang-format 14
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: true
@@ -80,4 +79,4 @@ SpacesInParentheses: false
 SpacesInSquareBrackets: false
 Standard: c++11
 TabWidth: 4
-UseTab: Never
+UseTab: Always
