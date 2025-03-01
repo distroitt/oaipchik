@@ -126,6 +126,8 @@ def remove_old_config(file_path, start_marker, end_marker):
 
 def check_git_updates():
     subprocess.run(['git', '-C', '.', 'fetch'], check=True)
+    if subprocess.run(["dpkg","-s","dobri-clang-tidy"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True).returncode != 0 or subprocess.run(["dpkg","-s","dobri-clang-format"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True).returncode != 0 :
+        return True
 
     result = subprocess.run(
         ['git', '-C', '.', 'log', f'HEAD..origin/main', '--oneline'],
