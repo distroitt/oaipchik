@@ -4,9 +4,13 @@ import shutil
 import subprocess
 import shlex
 import requests
+import sys
+
 url = "http://158.160.166.58:30002/messages"
 headers = "Content-Type: application/json"
 
+RESTART_FLAG = "--after-update"
+FORCE_UPDATE_FLAG = "--force-update"
 
 def install_custom_clang(syst):
     if syst == "Ubuntu":
@@ -37,10 +41,26 @@ def copy_config(dir, code_to_add):
         shutil.copy("forMac/profiles.xml", destination_folder)
         shutil.copy("forMac/qtversion.xml", destination_folder)
 
-
 def install_updates(dir, syst):
-    subprocess.run(['git', '-C', '.', 'reset', '--hard'])
-    subprocess.run(['git', '-C', '.', 'pull'])
+    force_update = FORCE_UPDATE_FLAG in sys.argv
+    
+    if not force_update:
+        result = subprocess.run(['git', 'rev-parse', 'HEAD'], capture_output=True, text=True)
+        old_commit = result.stdout.strip()
+        
+        subprocess.run(['git', '-C', '.', 'reset', '--hard'])
+        subprocess.run(['git', '-C', '.', 'pull'])
+        
+        result = subprocess.run(['git', 'diff', old_commit, 'HEAD', '--name-only', sys.argv[0]], 
+                               capture_output=True, text=True)
+        main_script_changed = sys.argv[0] in result.stdout.strip().split('\n')
+        
+        if main_script_changed:
+            print("Обнаружено обновление основного скрипта. Перезапуск...")
+            args = [sys.executable, sys.argv[0]] + [arg for arg in sys.argv[1:] if arg != RESTART_FLAG and arg != FORCE_UPDATE_FLAG] + [RESTART_FLAG, FORCE_UPDATE_FLAG]
+            os.execv(sys.executable, args)
+            return
+    
     if syst == "Ubuntu":
         with open("forConfigUbuntu.ini", "r", encoding="utf-8") as src:
             code_to_add = src.read()
@@ -57,7 +77,6 @@ def install_updates(dir, syst):
     destination_folder = dir + "/qtcreator/"
     with open(destination_folder + file_path, "w") as file:
         file.write(code_to_add)
-
 
 def check_install(surname):
     print("\n(!) ОБЯЗАТЕЛЬНО ПЕРЕЗАПУСТИТЕ Qt Creator (!) Для проверки установки проделайте шаги указанные в файле check.txt, если все успешно, нажмите Y, иначе N")
@@ -84,7 +103,6 @@ def check_install(surname):
         else:
             print("Неверный ввод! Пожалуйста, нажмите Y или N.")
 
-
 def remove_old_config(file_path, start_marker, end_marker):
     with open(file_path, 'r') as file:
         lines = file.readlines()
@@ -106,7 +124,6 @@ def remove_old_config(file_path, start_marker, end_marker):
     with open(file_path, 'w') as file:
         file.writelines(result_lines)
 
-
 def check_git_updates():
     subprocess.run(['git', '-C', '.', 'fetch'], check=True)
 
@@ -119,46 +136,60 @@ def check_git_updates():
 
     return result.stdout.strip()
 
-
-if platform.system() == "Linux":
+def main():
+    force_update = FORCE_UPDATE_FLAG in sys.argv
     
-    dir = os.getenv('HOME') + "/.config/QtProject"
-    if os.path.exists(dir + "/QtCreatorBackup.ini"):
-        print("Поиск обновлений")
-        if check_git_updates():
-            print("Найдено обновление")
-            install_updates(dir, "Ubuntu")
-            print("Обновление установлено")
+    if platform.system() == "Linux":
+        dir = os.getenv('HOME') + "/.config/QtProject"
+        if os.path.exists(dir + "/QtCreatorBackup.ini"):
+            if force_update:
+                print("Применяются обновления после перезапуска...")
+                install_updates(dir, "Ubuntu")
+                print("Обновление установлено")
+            else:
+                print("Поиск обновлений")
+                if check_git_updates() or RESTART_FLAG in sys.argv:
+                    print("Найдено обновление")
+                    install_updates(dir, "Ubuntu")
+                    print("Обновление установлено")
+                else:
+                    print("Обновление не найдено")
         else:
-            print("Обновление не найдено")
-    else:
-        print("Введите фамилию: ")
-        surname = input()
-        with open("forConfigUbuntu.ini", "r", encoding="utf-8") as src:
-            code_to_add = src.read()
-        copy_config(dir, code_to_add)
-        install_custom_clang("Ubuntu")
-        subprocess.run(
-            "sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y cmake; sudo apt-get install -f;",
-            shell=True)
-        check_install(surname)
+            print("Введите фамилию: ")
+            surname = input()
+            with open("forConfigUbuntu.ini", "r", encoding="utf-8") as src:
+                code_to_add = src.read()
+            copy_config(dir, code_to_add)
+            install_custom_clang("Ubuntu")
+            subprocess.run(
+                "sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y cmake; sudo apt-get install -f;",
+                shell=True)
+            check_install(surname)
 
-elif platform.system() == "Darwin":
-    dir = os.getenv('HOME') + "/.config/QtProject"
-    if os.path.exists(dir + "/QtCreatorBackup.ini"):
-        print("Поиск обновлений")
-        if check_git_updates():
-            print("Найдено обновление")
-            install_updates(dir, "MacOS")
-            print("Обновление установлено")
+    elif platform.system() == "Darwin":
+        dir = os.getenv('HOME') + "/.config/QtProject"
+        if os.path.exists(dir + "/QtCreatorBackup.ini"):
+            if force_update:
+                print("Применяются обновления после перезапуска...")
+                install_updates(dir, "MacOS")
+                print("Обновление установлено")
+            else:
+                print("Поиск обновлений")
+                if check_git_updates() or RESTART_FLAG in sys.argv:
+                    print("Найдено обновление")
+                    install_updates(dir, "MacOS")
+                    print("Обновление установлено")
+                else:
+                    print("Обновление не найдено")
         else:
-            print("Обновление не найдено")
-    else:
-        print("Введите фамилию: ")
-        surname = input()
-        with open("forConfigMac.ini", "r", encoding="utf-8") as src:
-            code_to_add = src.read()
-        copy_config(dir, code_to_add)
-        subprocess.run("brew update && brew upgrade && brew install llvm && brew install clazy && brew install cmake",
-                       shell=True)
-        check_install(surname)
+            print("Введите фамилию: ")
+            surname = input()
+            with open("forConfigMac.ini", "r", encoding="utf-8") as src:
+                code_to_add = src.read()
+            copy_config(dir, code_to_add)
+            subprocess.run("brew update && brew upgrade && brew install llvm && brew install clazy && brew install cmake",
+                        shell=True)
+            check_install(surname)
+
+if __name__ == "__main__":
+    main()
