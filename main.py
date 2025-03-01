@@ -108,7 +108,7 @@ def check_git_updates():
     subprocess.run(['git', '-C', '.', 'fetch'], check=True)
 
     result = subprocess.run(
-        ['git', '-C', '.', 'log', f'HEAD..origin/custom-clang', '--oneline'],
+        ['git', '-C', '.', 'log', f'HEAD..origin/main', '--oneline'],
         capture_output=True,
         text=True,
         check=True
