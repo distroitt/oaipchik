@@ -11,13 +11,13 @@ def install_custom_clang(syst):
     if syst == "Ubuntu":
         res = subprocess.run(["dpkg","-s","dobri-clang-tidy"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True)
         if res.returncode != 0:
-            link = "https://downloader.disk.yandex.ru/disk/e0314e79388bef965c0b5e5bd0aa64d72520b5408d06e966d1d54d1ac581340d/67c2349d/J7_XO_jRy0WRNiQk2sRSelg6O-jOAJDuQYPBHutEeRp_dL28hqJgEnP7fKR6nceJFTz8Z_JQqS0UOQMlEGeuNQ%3D%3D?uid=0&filename=dobri-clang-tidy.deb&disposition=attachment&hash=jNLX%2B2tYX1hxbASuQON4TPNFT6WaBuxYjLQCMVSNiWmHmFFsZRnt6XvaownU6u4hq/J6bpmRyOJonT3VoXnDag%3D%3D&limit=0&content_type=application%2Fvnd.debian.binary-package&owner_uid=2014468968&fsize=205655362&hid=2190ee0b1bd351ef426b8a78ce61ef0c&media_type=compressed&tknv=v2"
+            link = "https://downloader.disk.yandex.ru/disk/04077b31ff57201987864afd981aa9a8263f8d00e29d7b45e2357fc1d5491ac2/67c2cf84/J7_XO_jRy0WRNiQk2sRSelg6O-jOAJDuQYPBHutEeRp_dL28hqJgEnP7fKR6nceJFTz8Z_JQqS0UOQMlEGeuNQ%3D%3D?uid=0&filename=dobri-clang-tidy.deb&disposition=attachment&hash=jNLX%2B2tYX1hxbASuQON4TPNFT6WaBuxYjLQCMVSNiWmHmFFsZRnt6XvaownU6u4hq/J6bpmRyOJonT3VoXnDag%3D%3D&limit=0&content_type=application%2Fvnd.debian.binary-package&owner_uid=2014468968&fsize=205655362&hid=2190ee0b1bd351ef426b8a78ce61ef0c&media_type=compressed&tknv=v2"
             quoted_link = shlex.quote(link)
             subprocess.run(f"wget -O dobri-clang-tidy.deb {quoted_link}", shell=True)
             subprocess.run("sudo dpkg -i  --force-overwrite dobri-clang-tidy.deb; rm dobri-clang-tidy.deb", shell=True)
         res = subprocess.run(["dpkg","-s","dobri-clang-format"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True)
         if res.returncode != 0:
-            link = "https://downloader.disk.yandex.ru/disk/5cb6a6abdbbc8c8c823246c0faa0b8951182433144751e564bd9c2110a3bc2e1/67c2488c/J7_XO_jRy0WRNiQk2sRSelOVP8hQHD1rhaLF0NfQAS_bQanQPjXwWfF06Q838ZzdA_dP_gZYGdBmcDnZNne3ew%3D%3D?uid=0&filename=dobri-clang-format.deb&disposition=attachment&hash=8V9AB40BezPQTRw9JzU8iJ3AqgojtHIuLCvuYhNZAP2K3JTQY7HPiEA6aQl3jtwJq/J6bpmRyOJonT3VoXnDag%3D%3D&limit=0&content_type=application%2Fvnd.debian.binary-package&owner_uid=2014468968&fsize=32794020&hid=5716110e52543b092502eeca0397496e&media_type=compressed&tknv=v2"
+            link = "https://downloader.disk.yandex.ru/disk/cbe5227aa3345af0ff6fcedf1241fab534b094c8f0e7a1e0a40118bbd740155b/67c2cf48/J7_XO_jRy0WRNiQk2sRSelOVP8hQHD1rhaLF0NfQAS_bQanQPjXwWfF06Q838ZzdA_dP_gZYGdBmcDnZNne3ew%3D%3D?uid=0&filename=dobri-clang-format.deb&disposition=attachment&hash=8V9AB40BezPQTRw9JzU8iJ3AqgojtHIuLCvuYhNZAP2K3JTQY7HPiEA6aQl3jtwJq/J6bpmRyOJonT3VoXnDag%3D%3D&limit=0&content_type=application%2Fvnd.debian.binary-package&owner_uid=2014468968&fsize=32794020&hid=5716110e52543b092502eeca0397496e&media_type=compressed&tknv=v2"
             quoted_link = shlex.quote(link)
             subprocess.run(f"wget -O dobri-clang-format.deb {quoted_link}", shell=True)
             subprocess.run("sudo dpkg -i dobri-clang-format.deb; rm dobri-clang-format.deb", shell=True)
