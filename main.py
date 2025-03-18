@@ -14,13 +14,6 @@ FORCE_UPDATE_FLAG = "--force-update"
 
 def install_custom_clang(syst):
     if syst == "Ubuntu":
-        res = subprocess.run(["dpkg","-s","dobri-clang-tidy"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True)
-        if res.returncode != 0:
-            response = requests.get("https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key=https://yadi.sk/d/KvkjXeT84S7GfQ")
-            link = response.json().get('href')
-            quoted_link = shlex.quote(link)
-            subprocess.run(f"wget -O dobri-clang-tidy.deb {quoted_link}", shell=True)
-            subprocess.run("sudo dpkg -i  --force-overwrite dobri-clang-tidy.deb; rm dobri-clang-tidy.deb", shell=True)
         res = subprocess.run(["dpkg","-s","dobri-clang-format"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True)
         if res.returncode != 0:
             response = requests.get("https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key=https://yadi.sk/d/TWYiHI2zFvhb1A")
@@ -127,7 +120,7 @@ def remove_old_config(file_path, start_marker, end_marker):
 def check_git_updates(syst):
     subprocess.run(['git', '-C', '.', 'fetch'], check=True)
     if syst == "Ubuntu":
-        if subprocess.run(["dpkg","-s","dobri-clang-tidy"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True).returncode != 0 or subprocess.run(["dpkg","-s","dobri-clang-format"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True).returncode != 0 :
+        if subprocess.run(["dpkg","-s","dobri-clang-format"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True).returncode != 0 :
             return True
     else:
         pass
