@@ -124,10 +124,13 @@ def remove_old_config(file_path, start_marker, end_marker):
     with open(file_path, 'w') as file:
         file.writelines(result_lines)
 
-def check_git_updates():
+def check_git_updates(syst):
     subprocess.run(['git', '-C', '.', 'fetch'], check=True)
-    if subprocess.run(["dpkg","-s","dobri-clang-tidy"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True).returncode != 0 or subprocess.run(["dpkg","-s","dobri-clang-format"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True).returncode != 0 :
-        return True
+    if syst == "Ubuntu":
+        if subprocess.run(["dpkg","-s","dobri-clang-tidy"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True).returncode != 0 or subprocess.run(["dpkg","-s","dobri-clang-format"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True).returncode != 0 :
+            return True
+    else:
+        pass
 
     result = subprocess.run(
         ['git', '-C', '.', 'log', f'HEAD..origin/main', '--oneline'],
@@ -150,7 +153,7 @@ def main():
                 print("Обновление установлено")
             else:
                 print("Поиск обновлений")
-                if check_git_updates() or RESTART_FLAG in sys.argv:
+                if check_git_updates("Ubuntu") or RESTART_FLAG in sys.argv:
                     print("Найдено обновление")
                     install_updates(dir, "Ubuntu")
                     print("Обновление установлено")
@@ -177,7 +180,7 @@ def main():
                 print("Обновление установлено")
             else:
                 print("Поиск обновлений")
-                if check_git_updates() or RESTART_FLAG in sys.argv:
+                if check_git_updates("MacOS") or RESTART_FLAG in sys.argv:
                     print("Найдено обновление")
                     install_updates(dir, "MacOS")
                     print("Обновление установлено")
@@ -189,7 +192,7 @@ def main():
             with open("forConfigMac.ini", "r", encoding="utf-8") as src:
                 code_to_add = src.read()
             copy_config(dir, code_to_add)
-            subprocess.run("brew update && brew upgrade && brew install llvm && brew install clazy && brew install cmake",
+            subprocess.run("brew update; brew upgrade; brew install llvm; brew install clazy; brew install cmake",
                         shell=True)
             check_install(surname)
 
