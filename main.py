@@ -167,7 +167,7 @@ def main():
             copy_config(dir, code_to_add)
             install_custom_clang("Ubuntu")
             subprocess.run(
-                "sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y cmake; sudo apt-get install -f;",
+                "sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y cmake; sudo apt-get install -f; sudo apt install -y clang-tidy",
                 shell=True)
             check_install(surname)
 
@@ -192,7 +192,7 @@ def main():
             with open("forConfigMac.ini", "r", encoding="utf-8") as src:
                 code_to_add = src.read()
             copy_config(dir, code_to_add)
-            subprocess.run("brew update; brew upgrade; brew install llvm; brew install clazy; brew install cmake",
+            subprocess.run("brew update; brew upgrade; brew install llvm; brew install clazy; brew install cmake; brew install clang-tidy",
                         shell=True)
             check_install(surname)
 
