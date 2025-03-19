@@ -121,7 +121,8 @@ def check_git_updates(syst):
     subprocess.run(['git', '-C', '.', 'fetch'], check=True)
     if syst == "Ubuntu":
         if subprocess.run(["dpkg","-s","dobri-clang-format"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True).returncode != 0 :
-            return True
+            install_custom_clang("Ubuntu")
+            return 1
     else:
         pass
 
