@@ -13,14 +13,7 @@ RESTART_FLAG = "--after-update"
 FORCE_UPDATE_FLAG = "--force-update"
 
 def install_custom_clang(syst):
-    if syst == "Ubuntu":
-        res = subprocess.run(["dpkg","-s","dobri-clang-format"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True)
-        if res.returncode != 0:
-            response = requests.get("https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key=https://yadi.sk/d/TWYiHI2zFvhb1A")
-            link = response.json().get('href')
-            quoted_link = shlex.quote(link)
-            subprocess.run(f"wget -O dobri-clang-format.deb {quoted_link}", shell=True)
-            subprocess.run("sudo dpkg -i dobri-clang-format.deb; rm dobri-clang-format.deb", shell=True)
+    pass
 
 def copy_config(dir, code_to_add):
     with open(dir + "/QtCreator.ini", "a", encoding="utf-8") as dest:
@@ -161,7 +154,7 @@ def main():
             copy_config(dir, code_to_add)
             install_custom_clang("Ubuntu")
             subprocess.run(
-                "sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y cmake; sudo apt-get install -f; sudo apt install -y clang-tidy",
+                "sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y cmake; sudo apt-get install -f; sudo apt install -y clang-tidy; sudo apt install clang-format",
                 shell=True)
             check_install(surname)
 
@@ -186,7 +179,7 @@ def main():
             with open("forConfigMac.ini", "r", encoding="utf-8") as src:
                 code_to_add = src.read()
             copy_config(dir, code_to_add)
-            subprocess.run("brew update; brew upgrade; brew install llvm; brew install clazy; brew install cmake; brew install clang-tidy",
+            subprocess.run("brew update; brew upgrade; brew install llvm; brew install clazy; brew install cmake; brew install clang-tidy; brew install clang-format",
                         shell=True)
             check_install(surname)
 
