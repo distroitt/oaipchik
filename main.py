@@ -13,7 +13,15 @@ RESTART_FLAG = "--after-update"
 FORCE_UPDATE_FLAG = "--force-update"
 
 def install_custom_clang(syst):
-    pass
+    if syst == "Ubuntu":
+        try:
+            response = requests.get("https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key=https://disk.yandex.ru/d/n2cYNYaWTWladQ")
+            link = response.json().get('href')
+            quoted_link = shlex.quote(link)
+            subprocess.run(f"wget -O dobri-clang-format.deb {quoted_link}", shell=True)
+            subprocess.run("sudo dpkg -i dobri-clang-format.deb; rm dobri-clang-format.deb", shell=True)
+        except Exception as e:
+            print("Не удалось установить пакет dobri-clang-format")
 
 def copy_config(dir, code_to_add):
     with open(dir + "/QtCreator.ini", "a", encoding="utf-8") as dest:
@@ -113,12 +121,7 @@ def remove_old_config(file_path, start_marker, end_marker):
 def check_git_updates(syst):
     subprocess.run(['git', '-C', '.', 'fetch'], check=True)
     if syst == "Ubuntu":
-        if subprocess.run(["dpkg","-s","dobri-clang-format"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True).returncode != 0 :
-            install_custom_clang("Ubuntu")
-            return 1
-    else:
-        pass
-
+        install_custom_clang("Ubuntu")
     result = subprocess.run(
         ['git', '-C', '.', 'log', f'HEAD..origin/main', '--oneline'],
         capture_output=True,
@@ -154,7 +157,7 @@ def main():
             copy_config(dir, code_to_add)
             install_custom_clang("Ubuntu")
             subprocess.run(
-                "sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y cmake; sudo apt-get install -f; sudo apt install -y clang-tidy; sudo apt install clang-format",
+                "sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y cmake; sudo apt-get install -f; sudo apt install -y clang-tidy",
                 shell=True)
             check_install(surname)
 
@@ -179,7 +182,7 @@ def main():
             with open("forConfigMac.ini", "r", encoding="utf-8") as src:
                 code_to_add = src.read()
             copy_config(dir, code_to_add)
-            subprocess.run("brew update; brew upgrade; brew install llvm; brew install clazy; brew install cmake; brew install clang-tidy; brew install clang-format",
+            subprocess.run("brew update; brew upgrade; brew install llvm; brew install clazy; brew install cmake; brew install clang-tidy",
                         shell=True)
             check_install(surname)
 
