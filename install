@@ -1,0 +1,36 @@
+#!/bin/bash
+
+OS_TYPE=$(uname -s)
+
+if [ "$OS_TYPE" == "Darwin" ]; then
+  brew update; brew install cmake ninja git python
+elif [ -f /etc/os-release ]; then
+  . /etc/os-release
+  if [[ "$ID" == "ubuntu"* ]] || [[ "$ID" == "linuxmint"* ]]; then
+    sudo apt update; sudo apt install -y build-essential cmake ninja-build git python3
+  elif [[ "$ID" == "arch"* ]]; then
+    sudo pacman -Syu --noconfirm; sudo pacman -S --noconfirm cmake ninja git python base-devel
+  elif [[ "$ID" == "fedora"* ]]; then
+    sudo dnf update; sudo dnf install -y cmake ninja-build git python3 gcc gcc-c++ make
+  fi
+else
+  echo "Неподдерживаемая операционная система"
+  exit 1
+fi
+
+sudo mkdir -p /usr/local/lib/dobri-clang-format
+sudo cp dobri-clang-format.py /usr/local/lib/dobri-clang-format/
+git clone https://github.com/llvm/llvm-project.git --depth 1
+cp ./ClangFormat.cpp llvm-project/clang/tools/clang-format/
+cp dobri-clang-format.py llvm-project/clang/tools/clang-format/
+cd llvm-project
+
+mkdir -p build
+cd build
+cmake -G Ninja -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" -DCMAKE_BUILD_TYPE=Release ../llvm
+ninja clang-format
+
+sudo cp bin/clang-format /usr/local/bin/dobri-clang-format
+cd ../..
+rm -rf llvm-project/
+echo "Установка завершена! Используйте dobri-clang-format."
