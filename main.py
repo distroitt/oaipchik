@@ -12,16 +12,8 @@ headers = "Content-Type: application/json"
 RESTART_FLAG = "--after-update"
 FORCE_UPDATE_FLAG = "--force-update"
 
-def install_custom_clang(syst):
-    if syst == "Ubuntu":
-        try:
-            response = requests.get("https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key=https://disk.yandex.ru/d/n2cYNYaWTWladQ")
-            link = response.json().get('href')
-            quoted_link = shlex.quote(link)
-            subprocess.run(f"wget -O dobri-clang-format.deb {quoted_link}", shell=True)
-            subprocess.run("sudo dpkg -i dobri-clang-format.deb; rm dobri-clang-format.deb", shell=True)
-        except Exception as e:
-            print("Не удалось установить пакет dobri-clang-format")
+def install_custom_clang():
+    subproccess.run("./install", shell=True)
 
 def copy_config(dir, code_to_add):
     with open(dir + "/QtCreator.ini", "a", encoding="utf-8") as dest:
@@ -120,8 +112,8 @@ def remove_old_config(file_path, start_marker, end_marker):
 
 def check_git_updates(syst):
     subprocess.run(['git', '-C', '.', 'fetch'], check=True)
-    if syst == "Ubuntu":
-        install_custom_clang("Ubuntu")
+    if not os.path.exists("/usr/local/bin/dobri-clang-format":
+        install_custom_clang()
     result = subprocess.run(
         ['git', '-C', '.', 'log', f'HEAD..origin/main', '--oneline'],
         capture_output=True,
@@ -156,8 +148,7 @@ def main():
                 code_to_add = src.read()
             copy_config(dir, code_to_add)
             install_custom_clang("Ubuntu")
-            subprocess.run(
-                "sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y cmake; sudo apt-get install -f; sudo apt install -y clang-tidy",
+            subprocess.run("sudo apt update; sudo apt upgrade -y; sudo apt install -y curl; sudo apt install -y clazy; sudo apt install -y cmake; sudo apt-get install -f; sudo apt install -y clang-tidy",
                 shell=True)
             check_install(surname)
 
