@@ -13,7 +13,7 @@ RESTART_FLAG = "--after-update"
 FORCE_UPDATE_FLAG = "--force-update"
 
 def install_custom_clang():
-    subproccess.run("./install", shell=True)
+    subprocess.run("./install", shell=True)
 
 def copy_config(dir, code_to_add):
     with open(dir + "/QtCreator.ini", "a", encoding="utf-8") as dest:
@@ -50,7 +50,6 @@ def install_updates(dir, syst):
     if syst == "Ubuntu":
         with open("forConfigUbuntu.ini", "r", encoding="utf-8") as src:
             code_to_add = src.read()
-        install_custom_clang(syst)
     elif syst == "MacOS":
         with open("forConfigMac.ini", "r", encoding="utf-8") as src:
             code_to_add = src.read()
@@ -112,7 +111,7 @@ def remove_old_config(file_path, start_marker, end_marker):
 
 def check_git_updates(syst):
     subprocess.run(['git', '-C', '.', 'fetch'], check=True)
-    if not os.path.exists("/usr/local/bin/dobri-clang-format":
+    if not os.path.exists("/usr/local/bin/dobri-clang-format"):
         install_custom_clang()
     result = subprocess.run(
         ['git', '-C', '.', 'log', f'HEAD..origin/main', '--oneline'],
