@@ -708,6 +708,120 @@ static bool isIgnored(StringRef FilePath) {
 
   return false;
 }
+std::string formatCppFile(const std::string& content) {
+    // Convert content to lines
+    std::vector<std::string> lines;
+    std::istringstream stream(content);
+    std::string line;
+    while (std::getline(stream, line)) {
+        lines.push_back(line + "\n");
+    }
+
+    // Compile regex patterns
+    std::regex class_start_pattern(R"(\s*class\s+\w+.*\{)");
+    std::regex class_end_pattern(R"(^\s*};\s*$)");
+    std::regex function_start_pattern(R"(^\s*(?:\w+\s+)*\w+\s*$[^)]*$\s*(?:const\s*)?\s*\{)");
+    std::regex class_method_pattern(R"(\w+::.+\(\)\s*\{)");
+    std::regex if_switch_pattern(R"(^\s*(?:if|switch)\s*\()");
+
+    std::vector<std::string> result_lines;
+    bool in_class = false;
+    bool prev_method = false;
+    bool rar = false;
+    size_t i = 0;
+
+    while (i < lines.size()) {
+        line = lines[i];
+
+        // Detect class start
+        if (std::regex_search(line, class_start_pattern)) {
+            in_class = true;
+            prev_method = false;
+            result_lines.push_back(line);
+            i++;
+            continue;
+        }
+
+        // Detect class end
+        if (in_class && std::regex_match(line, class_end_pattern)) {
+            in_class = false;
+            result_lines.push_back(line);
+            prev_method = false;
+            i++;
+            continue;
+        }
+
+        // Check for class method definitions (outside class)
+        if (std::regex_search(line, class_method_pattern) && 
+            !std::regex_match(line, if_switch_pattern)) {
+            if (rar) {
+                while (!result_lines.empty() && result_lines.back() == "\n") {
+                    result_lines.pop_back();
+                }
+                result_lines.push_back("\n");
+            } else {
+                rar = true;
+            }
+        }
+
+        // Check for function/method definitions
+        if (std::regex_match(line, function_start_pattern) && 
+            !std::regex_search(line, class_method_pattern)) {
+            if (in_class) {
+                // Inside class - add one blank line between methods
+                if (prev_method) {
+                    while (!result_lines.empty() && result_lines.back() == "\n") {
+                        result_lines.pop_back();
+                    }
+                    result_lines.push_back("\n");
+                }
+                result_lines.push_back(line);
+                prev_method = true;
+            } else {
+                // Outside class - add two blank lines between functions
+                while (!result_lines.empty() && result_lines.back() == "\n") {
+                    result_lines.pop_back();
+                }
+                if (std::regex_match(line, if_switch_pattern)) {
+                    // Just add the line as is for if/switch statements
+                    result_lines.push_back(line);
+                } else {
+                    result_lines.push_back("\n");
+                    result_lines.push_back("\n");
+                    result_lines.push_back(line);
+                }
+            }
+
+            // Process function body by tracking braces
+            int function_depth = std::count(line.begin(), line.end(), '{') - 
+                                std::count(line.begin(), line.end(), '}');
+            i++;
+            while (i < lines.size() && function_depth > 0) {
+                std::string current_line = lines[i];
+                result_lines.push_back(current_line);
+                function_depth += std::count(current_line.begin(), current_line.end(), '{') - 
+                                std::count(current_line.begin(), current_line.end(), '}');
+                i++;
+            }
+            continue;
+        }
+
+        // For other lines, just copy them
+        result_lines.push_back(line);
+        // Inside class and non-empty line that's not a method, reset prev_method flag
+        if (in_class && !line.empty() && line != "\n") {
+            prev_method = false;
+        }
+        i++;
+    }
+
+    // Combine result lines into a single string
+    std::string result;
+    for (const auto& l : result_lines) {
+        result += l;
+    }
+    return result;
+}
 
 std::string runCustomFormatterAndGetResult(const std::string &content) {
   // Создаем временный файл
@@ -809,7 +923,7 @@ if (FileNames.empty()) {
   }
   
   // Запускаем сначала custom formatter (Python-скрипт)
-  std::string formatted_content = runCustomFormatterAndGetResult(content);
+  std::string formatted_content = formatCppFile(content);
   //llvm::outs() << "Formatted content:\n" << formatted_content << "\n";
   
   int result = clang::format::format("-", FailOnIncompleteFormat, formatted_content);
