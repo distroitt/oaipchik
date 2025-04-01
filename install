@@ -32,5 +32,5 @@ ninja clang-format
 
 sudo cp bin/clang-format /usr/local/bin/dobri-clang-format
 cd ../..
-rm -rf llvm-project/
+#rm -rf llvm-project/
 echo "Установка завершена! Используйте dobri-clang-format."
